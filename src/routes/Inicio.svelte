@@ -1,53 +1,398 @@
 <script>
-  </script>
-  
-  <style>
-    .welcome-container {
-      text-align: center;
-      padding: 50px;
-      font-family: Arial, sans-serif;
+    function handleSubmit(event){
+        event.preventDefault();
+        window.location.href = '/login';
     }
-  
-    .logo {
-      width: 150px;
-      height: auto;
-    }
-  
-    .btn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  
-    .btn:hover {
-      background-color: #d32f2f;
-    }
-  
-    .header {
-      font-size: 2.5rem;
-      font-weight: bold;
-      margin-top: 20px;
-    }
-    .footer {
-      font-size: 0.9rem;
-      margin-top: 50px;
-    }
-  </style>
-  
-  <div class="welcome-container">
-    <img class="logo" src="/logo.png" alt="Logo Colfecar" />
-    <div class="header">Plataforma de Gestión de Clientes y Créditos</div>
-  
-    <div class="footer">
-      <span>Resúmenes Financieros</span> | <span>Cierres Viales</span>
-    </div>
+    // async function handleSubmit(event) {
+    //     event.preventDefault();
+    //     const formData = new FormData(event.target);
+    //     let ip_hostname = '3.143.242.240'
+    //     const response = await fetch(`http://${ip_hostname}:5001/api/login`, {
+    //         method: 'POST',
+    //         body: formData
+    //     });
+    //     const result = await response.json();
+    //     console.log(result);
+    // }
+
+    // async function handleSubmit(event) {
+    //     event.preventDefault();
+    //     const formData = new FormData(event.target);
+    //     let ip_hostname = '3.143.242.240';
+    //     // const params = new URLSearchParams(formData).toString();
+    //     // const response = await fetch(`http://${ip_hostname}:5001/api/login?${params}`);
+    //     const response = await fetch(`http://${ip_hostname}:5001/api/login`);
+    //     const result = await response.json();
+    //     console.log(result);
+    // }
+</script>
+
+<svelte:head>
+  <title>Plataforma de Gestión de Clientes y Créditos</title>
+  <link rel="stylesheet" href="styles.css">
+</svelte:head>
+
+<div class="header">
+  <div class="logo">
+      <img src="logo.png" alt="Logo">
+      <h1>Plataforma de Gestión de Clientes y Créditos</h1>
   </div>
-  <button class="btn">
-    <a href="/login">Iniciar Sesión</a>
-  </button>
-  
-  
+</div>
+
+<hr/>
+
+<div class="main" id="main">
+  <div class="content">
+      <div class="introduction">
+          <h2>Plataforma de Gestión de Clientes y Créditos</h2>
+          <hr>
+          <p>
+              La Plataforma de Gestión de Clientes y Créditos está diseñada para optimizar la administración de datos
+              de clientes, mejorar la gestión de créditos y proporcionar herramientas analíticas avanzadas. Este
+              sistema permite a las empresas tomar decisiones estratégicas informadas, minimizar riesgos financieros y
+              maximizar su rendimiento económico.
+          </p>
+      </div>
+      <br>
+      <span>
+          <div class="card">
+              <h2>Beneficios</h2>
+              <br>
+              <p>
+                  Optimiza la gestión financiera con herramientas que evalúan riesgos crediticios, analizan
+                  indicadores clave y automatizan flujos de pago. Reduce incumplimientos, mejora la planificación
+                  estratégica y asegura un flujo de efectivo constante para fortalecer la estabilidad de tu negocio.
+              </p>
+          </div>
+          <div class="img">
+              <img src="foto1.png" alt="Gestion de Clientes y Créditos" width="500px">
+          </div>
+      </span>
+      <br>
+      <span>
+          <div class="img">
+              <form method="POST" class="login-form" on:submit={handleSubmit}>
+                  <div class="form-group">
+                  </div>
+                  <button type="submit" class="btn">Iniciar Sesión</button>
+              </form>
+          </div>
+      </span>
+  </div>
+</div>
+
+<style>
+.header {
+    background-color: #ff5b5b;
+    color: #fff;
+    padding: 20px 30px;
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    /* z-index: 1000; */
+}
+
+.header .logo {
+    display: flex;
+    align-items: center;
+}
+
+.header .logo img {
+    max-width: 50px;
+    /* margin-right: 10px; */
+}
+
+.header h1 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.menu-icon {
+    width: 30px;
+    height: 25px;
+    position: relative;
+    cursor: pointer;
+}
+
+.menu-icon span {
+    display: block;
+    height: 5px;
+    width: 100%;
+    background-color: white;
+    /* margin: 5px 0; */
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -150px;
+    width: 50;
+    height: 1000px;
+    background-color: #ff5b5b;
+    color: #ecf0f1;
+    padding-top: 300px;
+    box-shadow: 2px 0 5px rgba(255, 34, 34, 0.1);
+    transition: left 0.3s ease-in-out;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar a {
+    display: block;
+    color: #ecf0f1;
+    padding: 12px 15px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #502c2c;
+}
+
+.main {
+    margin-top: 90px;
+    padding: 80px 20px 20px;
+    margin-left: 0;
+    transition: margin-left 0.3s;
+}
+
+.main.open {
+    margin-left: 150px;
+}
+
+.content {
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f7f7f7;
+}
+
+.card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-header h2 {
+    margin: 0;
+}
+
+.tables-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.tables-container .card {
+    margin-bottom: 0;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.buttons button {
+    background-color: #ff5b5b;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+.buttons button:hover {
+    background-color: #e04f4f;
+}
+
+.buttons button:last-child {
+    margin-right: 0;
+}
+
+.download-btn {
+    background-color: #ff5b5b;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.btn {
+    background-color: #ff5b5b;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 50%;
+}
+
+.btn-registro {
+    background-color: white;
+    color: #ff5b5b;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 50%;
+}
+
+.download-btn:hover {
+    background-color: #e04f4f;
+}
+
+@media (max-width: 768px) {
+    .tables-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+span {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input[type="text"] {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.canvas-container {
+    width: 45%;
+}
+
+.cv {
+    width: 100%;
+    height: auto;
+}
+
+span {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.table-container {
+    width: 45%;
+}
+
+span {
+    display: flex;
+    align-items: stretch;
+    gap: 30px;
+}
+
+.card {
+    background-color: #ff5b5b;
+}
+
+.card h2 {
+    color: white;
+}
+
+.card,
+.img {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.card h2,
+.card h3 {
+    text-align: center;
+}
+
+.img img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.introduction {
+    text-align: center;
+}
+</style>

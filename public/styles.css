@@ -11,9 +11,17 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
     background-color: #f3f3f3;
-    padding: 20px;
+    padding: 0px;
+}
+
+.app {
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    background-color: blue;
 }
 
 .container {
