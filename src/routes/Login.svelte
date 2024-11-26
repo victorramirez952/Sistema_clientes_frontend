@@ -1,7 +1,7 @@
 <!-- <script>
   let nombreUsuario = '';
   let password = '';
-  let ip_hostname = '18.224.23.254';
+  const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
 
   async function handleLogin(event) {
     event.preventDefault();
@@ -46,12 +46,25 @@
 
 <script>
   import { authStore, login_user } from '../stores/authStore';
-  import { redirect } from '@sveltejs/kit';
+  import { get } from 'svelte/store';
+
+  let user;
+  let isLoggedIn;
+
+  // Immediately check authentication state and redirect if not authenticated
+  (() => {
+    user = get(authStore);
+    isLoggedIn = user.isAuthenticated;
+    if (isLoggedIn){
+      window.location.href = '/profile';
+    }
+  })();
+
   let nombreUsuario = '';
   let password = '';
   let currentError = null;
 
-  let ip_hostname = '18.224.23.254';
+  const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
   
   const login = async () => {
     try {
@@ -64,10 +77,20 @@
       });
 
       if (!response.ok) {
+      currentError = '';
+      
+      const data = await response.json();
+      
+        if (data && data.message) {
+        currentError = data.message;
+      } else {
         currentError = 'Something went wrong';
-        console.error('Login failed with status:', response.status);
-        return;
       }
+      
+      console.error('Login failed with status:', response.status);
+      alert(currentError);
+      return;
+    }
 
       const data = await response.json();
 
@@ -81,10 +104,8 @@
       }
 
       // Redirect to the profile page after a delay
-      setTimeout(() => {
-        window.location.href = '/profile';
-      }, 5000);
-
+      window.location.href = '/profile';
+      
     } catch (error) {
       currentError = `Error logging in: ${error.message}`;
       console.error('Error logging in:', error);
@@ -100,6 +121,7 @@
   <title>Iniciar Sesión</title>
 </svelte:head>
 
+{#if !isLoggedIn}
 <div class="container">
   <header>
     <div class="logo">
@@ -131,6 +153,7 @@
     <button type="submit" class="btn">Iniciar Sesion</button>
   </form>
 </div>
+{/if}
 
 <style> 
   header{

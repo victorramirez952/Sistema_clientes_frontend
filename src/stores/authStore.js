@@ -17,7 +17,6 @@ authStore.subscribe((value) => {
 // Función para actualizar el estado de autenticación
 export const login_user = (data) => {
   console.log("Actualizando el estado de autenticación");
-  console.log(data);
   
   authStore.set({
     isAuthenticated: true,
@@ -25,9 +24,9 @@ export const login_user = (data) => {
     token: data.token
   });
   // Check if the new values are setted
-  authStore.subscribe((value) => {
-    console.log('Store updated:', value);
-  });
+  // authStore.subscribe((value) => {
+  //   console.log('Store updated:', value);
+  // });
 };
 
 // Función para cerrar sesión

@@ -1,4 +1,5 @@
 <script>
+    //     const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
     function handleSubmit(event){
         event.preventDefault();
         window.location.href = '/login';
@@ -6,7 +7,6 @@
     // async function handleSubmit(event) {
     //     event.preventDefault();
     //     const formData = new FormData(event.target);
-    //     let ip_hostname = '3.143.242.240'
     //     const response = await fetch(`http://${ip_hostname}:5001/api/login`, {
     //         method: 'POST',
     //         body: formData
@@ -18,7 +18,6 @@
     // async function handleSubmit(event) {
     //     event.preventDefault();
     //     const formData = new FormData(event.target);
-    //     let ip_hostname = '3.143.242.240';
     //     // const params = new URLSearchParams(formData).toString();
     //     // const response = await fetch(`http://${ip_hostname}:5001/api/login?${params}`);
     //     const response = await fetch(`http://${ip_hostname}:5001/api/login`);
