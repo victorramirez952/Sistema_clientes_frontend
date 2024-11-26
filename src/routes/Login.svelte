@@ -1,7 +1,7 @@
-<script>
+<!-- <script>
   let nombreUsuario = '';
   let password = '';
-  let ip_hostname = '18.216.6.2';
+  let ip_hostname = '18.224.23.254';
 
   async function handleLogin(event) {
     event.preventDefault();
@@ -42,6 +42,54 @@
       alert('Ocurrió un problema al iniciar sesión. Intente más tarde.');
     }
   }
+</script> -->
+
+<script>
+  import { authStore, login_user } from '../stores/authStore';
+  import { redirect } from '@sveltejs/kit';
+  let nombreUsuario = '';
+  let password = '';
+  let currentError = null;
+
+  let ip_hostname = '18.224.23.254';
+  
+  const login = async () => {
+    try {
+      const response = await fetch(`http://${ip_hostname}:5001/api/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nombreUsuario, password }),
+      });
+
+      if (!response.ok) {
+        currentError = 'Something went wrong';
+        console.error('Login failed with status:', response.status);
+        return;
+      }
+
+      const data = await response.json();
+
+      // Ensure `data` is in the correct format before updating the store
+      if (data) {
+        console.log('API Response:', data);
+        login_user(data); // Update the store
+      } else {
+        currentError = 'Invalid response data';
+        console.error('Response data invalid or null:', data);
+      }
+
+      // Redirect to the profile page after a delay
+      setTimeout(() => {
+        window.location.href = '/profile';
+      }, 5000);
+
+    } catch (error) {
+      currentError = `Error logging in: ${error.message}`;
+      console.error('Error logging in:', error);
+    }
+  };
 </script>
 
 
@@ -58,8 +106,8 @@
       <img src="logo.png" alt="Logo Colfecar" />
     </div>
   </header>
-  <h1 class="title">Iniciar Sesión</h1>
-  <form on:submit|preventDefault={handleLogin}>
+  <h1 class="title">Iniciar Sesión v0.0</h1>
+  <form on:submit|preventDefault={login}>
     <div class="form-group">
       <label for="nombreUsuario">Usuario</label>
       <input
