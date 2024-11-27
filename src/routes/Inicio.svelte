@@ -1,34 +1,12 @@
 <script>
-    //     const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
     function handleSubmit(event){
         event.preventDefault();
         window.location.href = '/login';
     }
-    // async function handleSubmit(event) {
-    //     event.preventDefault();
-    //     const formData = new FormData(event.target);
-    //     const response = await fetch(`http://${ip_hostname}:5001/api/login`, {
-    //         method: 'POST',
-    //         body: formData
-    //     });
-    //     const result = await response.json();
-    //     console.log(result);
-    // }
-
-    // async function handleSubmit(event) {
-    //     event.preventDefault();
-    //     const formData = new FormData(event.target);
-    //     // const params = new URLSearchParams(formData).toString();
-    //     // const response = await fetch(`http://${ip_hostname}:5001/api/login?${params}`);
-    //     const response = await fetch(`http://${ip_hostname}:5001/api/login`);
-    //     const result = await response.json();
-    //     console.log(result);
-    // }
 </script>
 
 <svelte:head>
   <title>Plataforma de Gestión de Clientes y Créditos</title>
-  <link rel="stylesheet" href="styles.css">
 </svelte:head>
 
 <div class="header">
@@ -40,48 +18,29 @@
 
 <hr/>
 
-<div class="main" id="main">
+<div class="container_inicio">
   <div class="content">
-      <div class="introduction">
-          <h2>Plataforma de Gestión de Clientes y Créditos</h2>
-          <hr>
-          <p>
-              La Plataforma de Gestión de Clientes y Créditos está diseñada para optimizar la administración de datos
-              de clientes, mejorar la gestión de créditos y proporcionar herramientas analíticas avanzadas. Este
-              sistema permite a las empresas tomar decisiones estratégicas informadas, minimizar riesgos financieros y
-              maximizar su rendimiento económico.
-          </p>
-      </div>
-      <br>
-      <span>
-          <div class="card">
-              <h2>Beneficios</h2>
-              <br>
-              <p>
-                  Optimiza la gestión financiera con herramientas que evalúan riesgos crediticios, analizan
-                  indicadores clave y automatizan flujos de pago. Reduce incumplimientos, mejora la planificación
-                  estratégica y asegura un flujo de efectivo constante para fortalecer la estabilidad de tu negocio.
-              </p>
-          </div>
-          <div class="img">
-              <img src="foto1.png" alt="Gestion de Clientes y Créditos" width="500px">
-          </div>
-      </span>
-      <br>
-      <span>
-          <div class="img">
-              <form method="POST" class="login-form" on:submit={handleSubmit}>
-                  <div class="form-group">
-                  </div>
-                  <button type="submit" class="btn">Iniciar Sesión</button>
-              </form>
-          </div>
-      </span>
+    <div class="card">
+        <h2>Beneficios</h2>
+        <p>
+            Optimiza la gestión financiera con herramientas que evalúan riesgos crediticios, analizan
+            indicadores clave y automatizan flujos de pago. Reduce incumplimientos, mejora la planificación
+            estratégica y asegura un flujo de efectivo constante para fortalecer la estabilidad de tu negocio.
+        </p>
+    </div>
+    <div class="img">
+        <img src="foto1.png" alt="Gestion de Clientes y Créditos">
+    </div>
+    <div class="btn_login">
+        <form method="POST" class="login-form" on:submit={handleSubmit}>
+            <button type="submit" class="btn">Iniciar Sesión</button>
+        </form>
+    </div>
   </div>
 </div>
 
 <style>
-.header {
+    .header {
     background-color: #ff5b5b;
     color: #fff;
     padding: 20px 30px;
@@ -91,7 +50,7 @@
     /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
     position: fixed;
     top: 0;
-    width: 100vw;
+    width: 100%;
     /* z-index: 1000; */
 }
 
@@ -155,20 +114,23 @@
     background-color: #502c2c;
 }
 
-.main {
-    margin-top: 90px;
-    padding: 80px 20px 20px;
+.container_inicio {
+    /* margin-top: 90px; */
+    width: 100%;
+    display: flex;
+    /* padding: 80px 20px 20px; */
     margin-left: 0;
     transition: margin-left 0.3s;
-}
-
-.main.open {
-    margin-left: 150px;
+    box-sizing: border-box;
+    margin-top: 75px;
 }
 
 .content {
-    margin-top: 20px;
-    padding: 20px;
+    /* margin-top: 20px; */
+    box-sizing: border-box;
+    /* padding: 20px; */
+    display: grid;
+    grid-template-columns: auto auto;
 }
 
 .table-container {
@@ -300,13 +262,6 @@ th {
         grid-template-columns: 1fr;
     }
 }
-
-span {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
 input[type="text"] {
     padding: 10px 15px;
     font-size: 14px;
@@ -326,13 +281,6 @@ input[type="text"] {
     width: 100%;
     height: auto;
 }
-
-span {
-    display: flex;
-    align-items: stretch;
-    gap: 20px;
-}
-
 .flex-container {
     display: flex;
     justify-content: space-between;
@@ -379,6 +327,17 @@ span {
     height: auto;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn_login {
+    grid-column: 1 / span 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .login-form {

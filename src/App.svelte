@@ -4,23 +4,16 @@
   import Welcome from './routes/Inicio.svelte';
   import Login from './routes/Login.svelte';
   import Profile from './routes/+page.svelte';
+  import Dashboard from './routes/Dashboard.svelte';
 </script>
 
 <Router>
-  <main class="principal_main">
+  <!-- <main class="principal_main"> -->
+  <svelte:fragment>
     <Route path="/" component={Welcome} />
     <Route path="/login" component={Login} />
     <Route path="/profile" component={Profile} />
-  </main>
+    <Route path="/dashboard" component={Dashboard} />
+  </svelte:fragment>
+  <!-- </main> -->
 </Router>
-
-<style>
-  .principal_main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    background-color: #f3f3f3;
-    padding: 0px;
-  }
-</style>

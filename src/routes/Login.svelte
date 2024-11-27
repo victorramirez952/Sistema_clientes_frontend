@@ -1,49 +1,3 @@
-<!-- <script>
-  let nombreUsuario = '';
-  let password = '';
-  const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
-
-  async function handleLogin(event) {
-    event.preventDefault();
-    const data = {
-      nombreUsuario: nombreUsuario,
-      password: password,
-    };
-
-    const url = `http://${ip_hostname}:5001/api/login`;
-
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      console.log(data);
-
-      if (response.status === 401) {
-        const errorResult = await response.json();
-        alert(errorResult.message);
-      } else if (response.status === 200) {
-        const result = await response.json();
-        console.log('Login exitoso:', result);
-        alert(`Bienvenido, Usuario: ${result.user_id}`);
-        window.localStorage.setItem('token', result.token);
-        window.localStorage.setItem('user_id', result.user_id);
-        window.localStorage.setItem('idCliente', result.idCliente);
-        window.location.href = 'dashboard.html';
-      } else {
-        throw new Error(`Error: ${response.status}`);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Ocurrió un problema al iniciar sesión. Intente más tarde.');
-    }
-  }
-</script> -->
-
 <script>
   import { authStore, login_user } from '../stores/authStore';
   import { get } from 'svelte/store';
@@ -65,6 +19,11 @@
   let currentError = null;
 
   const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
+
+  const login_test = async () => {
+    // window.location.href = 'ignore_dashboard.html'; 
+    window.location.href = '/dashboard';
+  }
   
   const login = async () => {
     try {
@@ -117,7 +76,6 @@
 <svelte:head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <link rel="stylesheet" href="styles.css"> -->
   <title>Iniciar Sesión</title>
 </svelte:head>
 
@@ -129,7 +87,7 @@
     </div>
   </header>
   <h1 class="title">Iniciar Sesión v0.0</h1>
-  <form on:submit|preventDefault={login}>
+  <form on:submit|preventDefault={login_test}>
     <div class="form-group">
       <label for="nombreUsuario">Usuario</label>
       <input
@@ -137,7 +95,7 @@
         id="nombreUsuario"
         bind:value={nombreUsuario}
         placeholder="Ingresa tu usuario"
-        required
+        required={false}
       />
     </div>
     <div class="form-group">
@@ -147,7 +105,7 @@
         id="password"
         bind:value={password}
         placeholder="Ingresa tu contraseña"
-        required
+        required={false}
       />
     </div>
     <button type="submit" class="btn">Iniciar Sesion</button>
@@ -155,7 +113,8 @@
 </div>
 {/if}
 
-<style> 
+
+<style>
   header{
     justify-content: center;
   }
@@ -172,6 +131,7 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       max-width: 400px;
       text-align: center;
+      margin: 0 auto;
   }
   .logo img {
       max-width: 150px;
@@ -215,4 +175,5 @@
       width: 100%;
       margin-top: 20px;
   }
+
 </style>
