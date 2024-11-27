@@ -49,25 +49,7 @@
             .catch(error => console.error('Error al cargar los datos:', error));
     }
 
-    function agregarClienteInicioTabla(cliente) {
-        const tableBody = document.querySelector("#clientesTable tbody");
 
-        const row = document.createElement("tr");
-        row.setAttribute("data-id", cliente.IDCLIENTE);
-
-        const valorSeguro = (dato) => dato !== null && dato !== undefined ? dato : "N/A";
-
-        row.innerHTML = `
-            <td>${valorSeguro(cliente.IDCLIENTE)}</td>
-            <td>${valorSeguro(cliente.FECHA)}</td>
-            <td>${valorSeguro(cliente.IDENTIFICACIONFISCAL)}</td>
-            <td>${valorSeguro(cliente.NOMBRE1)}</td>
-            <td>${valorSeguro(cliente.NOMBRE2)}</td>
-            <td>${valorSeguro(cliente.NUMEROCLIENTE)}</td>
-            <td>${valorSeguro(cliente.TELEFONO)}</td>`;
-
-        tableBody.insertBefore(row, tableBody.firstChild);
-    }
 
     function actualizarClienteEnTabla(cliente) {
         const tableBody = document.querySelector("#clientesTable tbody");
@@ -357,7 +339,7 @@
                     <span class="close">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <form class="login-form" on:submit|preventDefault={addCliente}>
+                    <form class="login-form" onsubmit={addCliente}>
                         <div class="form-group">
                             <label for="fechaAdd">FECHA</label>
                             <input type="text" id="fechaAdd" name="fechaAdd" placeholder="Ingresa la Fecha"
@@ -406,7 +388,7 @@
                     <span class="close">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <form class="login-form" on:submit|preventDefault={updateCliente}>
+                    <form class="login-form" onsubmit={updateCliente}>
                         <div class="form-group">
                             <label for="idClienteEdit">IDCLIENTE</label>
                             <input type="text" id="idClienteEdit" name="idClienteEdit"
@@ -460,7 +442,7 @@
                     <span class="close">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <form class="login-form" on:submit|preventDefault={deleteCliente}>
+                    <form class="login-form" onsubmit={deleteCliente}>
                         <div class="form-group">
                             <label for="idClienteDelete">IDCLIENTE</label>
                             <input type="text" id="idClienteDelete" name="idClienteDelete"
@@ -484,7 +466,7 @@
 
         <br>
 
-        <button class="download-btn" on:click={downloadData}>Descargar Datos</button>
+        <button class="download-btn" onclick={downloadData}>Descargar Datos</button>
     </div>
 </div>
 

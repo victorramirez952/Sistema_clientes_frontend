@@ -1,4 +1,5 @@
 <script>
+    import Header from './components/Header.svelte'
     let isOpen = false
     function toggleMenu() {
         const sidebar = document.getElementById("sidebar");
@@ -16,24 +17,7 @@
   <title>Dashboard Dev</title>
 </svelte:head>
 
-<div class="header">
-    <div class="logo">
-        <img src="logo.png" alt="Logo">
-        <h1>Plataforma de Gestión de Clientes y Créditos</h1>
-    </div>
-    <div class="menu-icon" onclick={toggleMenu}>
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-</div>
-
-<div class="sidebar" id="sidebar" style="left: {isOpen ? '0' : '-150px'}">
-    <a href="/clientes">Clientes</a>
-    <a href="historial_crediticio.html">Historial Crediticio</a>
-    <a href="creditos_pago.html">Créditos y Pagos</a>
-    <a href="analisis_financiero.html">Análisis Financiero</a>
-</div>
+<Header/>
 
 <div class="main" id="main" style="left: {isOpen ? '0' : '150px'}">
     <div class="dashboard-header">
