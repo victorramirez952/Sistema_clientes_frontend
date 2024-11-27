@@ -5,6 +5,7 @@
   import Login from './routes/Login.svelte';
   import Profile from './routes/+page.svelte';
   import Dashboard from './routes/Dashboard.svelte';
+  import Clientes from './routes/clientes/Clientes.svelte';
 </script>
 
 <Router>
@@ -14,6 +15,7 @@
     <Route path="/login" component={Login} />
     <Route path="/profile" component={Profile} />
     <Route path="/dashboard" component={Dashboard} />
+    <Route path="/clientes" component={Clientes} />
   </svelte:fragment>
   <!-- </main> -->
 </Router>

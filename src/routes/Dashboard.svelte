@@ -29,7 +29,7 @@
 </div>
 
 <div class="sidebar" id="sidebar" style="left: {isOpen ? '0' : '-150px'}">
-    <a href="clientes.html">Clientes</a>
+    <a href="/clientes">Clientes</a>
     <a href="historial_crediticio.html">Historial Crediticio</a>
     <a href="creditos_pago.html">Créditos y Pagos</a>
     <a href="analisis_financiero.html">Análisis Financiero</a>
