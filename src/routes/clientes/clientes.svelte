@@ -1,5 +1,8 @@
 <script>
-    import { login_user } from '../../stores/authStore';
+    import { checkAuth, getIsLoggedIn } from "../../utils/authUtils";
+    checkAuth();
+    let isLoggedIn = getIsLoggedIn();
+
     import Header from '../components/Header.svelte'
     import { onMount } from 'svelte';
     const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
@@ -49,7 +52,25 @@
             .catch(error => console.error('Error al cargar los datos:', error));
     }
 
+    function agregarClienteInicioTabla(cliente) {
+        const tableBody = document.querySelector("#clientesTable tbody");
 
+        const row = document.createElement("tr");
+        row.setAttribute("data-id", cliente.IDCLIENTE);
+
+        const valorSeguro = (dato) => dato !== null && dato !== undefined ? dato : "N/A";
+
+        row.innerHTML = `
+            <td>${valorSeguro(cliente.IDCLIENTE)}</td>
+            <td>${valorSeguro(cliente.FECHA)}</td>
+            <td>${valorSeguro(cliente.IDENTIFICACIONFISCAL)}</td>
+            <td>${valorSeguro(cliente.NOMBRE1)}</td>
+            <td>${valorSeguro(cliente.NOMBRE2)}</td>
+            <td>${valorSeguro(cliente.NUMEROCLIENTE)}</td>
+            <td>${valorSeguro(cliente.TELEFONO)}</td>`;
+
+        tableBody.insertBefore(row, tableBody.firstChild);
+    }
 
     function actualizarClienteEnTabla(cliente) {
         const tableBody = document.querySelector("#clientesTable tbody");
@@ -163,7 +184,7 @@
                 "IDENTIFICACIONFISCAL": "44444444441.0",
                 "NOMBRE1": "Barry Allen",
                 "NOMBRE2": "EL VELOCISTA",
-                "NUMEROCLIENTE": 916619,
+                "NUMEROCLIENTE": 916620,
                 "TELEFONO": "81-4444444"
             };
         console.log(cliente);
@@ -197,7 +218,7 @@
     }
 
     function updateCliente(event) {
-        // event.preventDefault();
+        event.preventDefault();
         closeAllModals()
 
         // const cliente = {
@@ -206,7 +227,7 @@
         //     IDENTIFICACIONFISCAL: '44444444441.0',
         //     NOMBRE1: 'Wally West',
         //     NOMBRE2: 'EL VELOCISTA',
-        //     NUMEROCLIENTE: 916618,
+        //     NUMEROCLIENTE: 916619,
         //     TELEFONO: '81-2222-4444'
         // };
 
@@ -239,12 +260,12 @@
         .then(data => {
             console.log('Cliente updated:', data);
             actualizarClienteEnTabla(cliente)
-            // Optionally update the client list here
         })
         .catch(error => console.error('Hubo un error al actualizar el cliente:', error.message));
     }
 
     function deleteCliente(event) {
+        event.preventDefault();
         closeAllModals()
         const cliente = {
             IDCLIENTE: document.getElementById('idClienteDelete').value,
@@ -266,7 +287,6 @@
         .then(data => {
             console.log('Cliente eliminado:', data);
             eliminarClienteDeTabla(cliente.IDCLIENTE)
-            // Optionally update the client list here
         })
         .catch(error => console.error('Hubo un error al eliminar el cliente:', error.message));
     }
@@ -306,6 +326,7 @@
   <title>Iniciar Sesión</title>
 </svelte:head>
 
+{#if isLoggedIn}
 <Header/>
 
 <div class="main" id="main">
@@ -469,6 +490,7 @@
         <button class="download-btn" onclick={downloadData}>Descargar Datos</button>
     </div>
 </div>
+{/if}
 
 <style>
 body {

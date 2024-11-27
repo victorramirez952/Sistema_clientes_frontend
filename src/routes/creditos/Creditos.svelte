@@ -1,5 +1,9 @@
 <script>
-  import { on } from 'svelte/events';
+    import { checkAuth, getIsLoggedIn } from "../../utils/authUtils";
+    checkAuth();
+    let isLoggedIn = getIsLoggedIn();
+
+    import { on } from 'svelte/events';
     import Header from '../components/Header.svelte'
     import { onMount } from 'svelte';
 
@@ -104,8 +108,8 @@
   <title>Créditos</title>
 </svelte:head>
 
+{#if isLoggedIn}
 <Header/>
-
 <div class="main" id="main">
     <div class="dashboard-header">
         <h2>Créditos</h2>
@@ -210,6 +214,7 @@
         <button class="download-btn" onclick={downloadData}>DESCARGAR DATOS</button>
     </div>
 </div>
+{/if}
 
 <style>
     body {

@@ -1,4 +1,9 @@
 <script>
+    import { checkAuth, getIsLoggedIn } from "../utils/authUtils";
+    checkAuth();
+
+    let isLoggedIn = getIsLoggedIn();
+
     import Header from './components/Header.svelte'
     let isOpen = false
     function toggleMenu() {
@@ -17,6 +22,7 @@
   <title>Dashboard Dev</title>
 </svelte:head>
 
+{#if isLoggedIn}
 <Header/>
 
 <div class="main" id="main" style="left: {isOpen ? '0' : '150px'}">
@@ -139,7 +145,7 @@
         </div>
     </div>
 </div>
-
+{/if}
 
 <style>
 body {

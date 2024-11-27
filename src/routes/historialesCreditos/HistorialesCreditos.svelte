@@ -1,4 +1,8 @@
 <script>
+    import { checkAuth, getIsLoggedIn } from "../../utils/authUtils";
+    checkAuth();
+    let isLoggedIn = getIsLoggedIn();
+
     import Header from '../components/Header.svelte'
     import { onMount } from 'svelte';
 
@@ -133,6 +137,7 @@
   <title>Historiales Crediticios</title>
 </svelte:head>
 
+{#if isLoggedIn}
 <Header/>
 
 <div class="main" id="main">
@@ -255,6 +260,7 @@
         <button class="download-btn" onclick={downloadData}>Descargar Datos</button>
     </div>
 </div>
+{/if}
 
 <style>
     body {

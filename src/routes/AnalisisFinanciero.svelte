@@ -1,4 +1,8 @@
 <script>
+    import { checkAuth, getIsLoggedIn } from "../utils/authUtils";
+    checkAuth();
+    let isLoggedIn = getIsLoggedIn();
+
     import Header from './components/Header.svelte'
     import { onMount } from 'svelte';
     import Chart from 'chart.js/auto';
@@ -37,6 +41,7 @@
   <title>Analisis Financiero</title>
 </svelte:head>
 
+{#if isLoggedIn}
 <Header/>
 
 <div class="main" id="main">
@@ -93,7 +98,7 @@
         </span>
     </div>
 </div>
-
+{/if}
 
 <style>
     body {
