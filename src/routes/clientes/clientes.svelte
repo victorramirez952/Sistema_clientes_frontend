@@ -1,9 +1,15 @@
 <script>
-  import { login_user } from '../../stores/authStore';
+    import { login_user } from '../../stores/authStore';
     import Header from '../components/Header.svelte'
     import { onMount } from 'svelte';
     const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
     const token = import.meta.env.VITE_TOKEN
+
+    function closeAllModals() {
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.style.display = 'none';
+        });
+    }
     
     function cargarClientes() {
         fetch(`http://${ip_hostname}:5002/api/clientes`, {
@@ -22,12 +28,13 @@
                 if (data && Array.isArray(data.clientes)) {
                     data.clientes.forEach(cliente => {
                         const row = document.createElement("tr");
+                        row.setAttribute("data-id", cliente.IDCLIENTE);
 
                         const valorSeguro = (dato) => dato !== null && dato !== undefined ? dato : "N/A";
 
                         row.innerHTML = `
-                    <td>${valorSeguro(cliente.FECHA)}</td>
                     <td>${valorSeguro(cliente.IDCLIENTE)}</td>
+                    <td>${valorSeguro(cliente.FECHA)}</td>
                     <td>${valorSeguro(cliente.IDENTIFICACIONFISCAL)}</td>
                     <td>${valorSeguro(cliente.NOMBRE1)}</td>
                     <td>${valorSeguro(cliente.NOMBRE2)}</td>
@@ -46,12 +53,13 @@
         const tableBody = document.querySelector("#clientesTable tbody");
 
         const row = document.createElement("tr");
+        row.setAttribute("data-id", cliente.IDCLIENTE);
 
         const valorSeguro = (dato) => dato !== null && dato !== undefined ? dato : "N/A";
 
         row.innerHTML = `
-            <td>${valorSeguro(cliente.FECHA)}</td>
             <td>${valorSeguro(cliente.IDCLIENTE)}</td>
+            <td>${valorSeguro(cliente.FECHA)}</td>
             <td>${valorSeguro(cliente.IDENTIFICACIONFISCAL)}</td>
             <td>${valorSeguro(cliente.NOMBRE1)}</td>
             <td>${valorSeguro(cliente.NOMBRE2)}</td>
@@ -59,6 +67,38 @@
             <td>${valorSeguro(cliente.TELEFONO)}</td>`;
 
         tableBody.insertBefore(row, tableBody.firstChild);
+    }
+
+    function actualizarClienteEnTabla(cliente) {
+        const tableBody = document.querySelector("#clientesTable tbody");
+
+        const row = document.querySelector(`#clientesTable tbody tr[data-id="${cliente.IDCLIENTE}"]`);
+
+        if (row) {
+            const valorSeguro = (dato) => dato !== null && dato !== undefined ? dato : "N/A";
+
+            row.innerHTML = `
+                <td>${valorSeguro(cliente.IDCLIENTE)}</td>
+                <td>${valorSeguro(cliente.FECHA)}</td>
+                <td>${valorSeguro(cliente.IDENTIFICACIONFISCAL)}</td>
+                <td>${valorSeguro(cliente.NOMBRE1)}</td>
+                <td>${valorSeguro(cliente.NOMBRE2)}</td>
+                <td>${valorSeguro(cliente.NUMEROCLIENTE)}</td>                
+                <td>${valorSeguro(cliente.TELEFONO)}</td>`;
+        } else {
+            console.error('No client found');
+        }
+    }
+
+    function eliminarClienteDeTabla(idCliente) {
+        const table = document.getElementById("clientesTable");
+        const rows = table.querySelectorAll("tbody tr"); // Select only rows inside the tbody
+
+        rows.forEach(row => {
+            if (row.getAttribute("data-id") === idCliente) {
+                row.remove();
+            }
+        });
     }
 
     function getCliente(idCliente) {
@@ -85,8 +125,8 @@
 
     onMount(() => {
         cargarClientes();
-        // getCliente(1).then(cliente => {
-        //     console.log(cliente);
+        // getCliente(126948).then(cliente => {
+        //     agregarClienteInicioTabla(cliente);
         // }).catch(error => {
         //     console.error('Error fetching client:', error);
         // });
@@ -114,9 +154,7 @@
         }
     
         closeButtons.forEach((button) => {
-            button.onclick = function () {
-                button.closest(".modal").style.display = "none";
-            };
+            button.onclick = closeAllModals
         });
     
         window.onclick = function (event) {
@@ -129,24 +167,24 @@
     function addCliente(event) {
         event.preventDefault();
         
-        
-        const cliente = {
-            FECHA: document.getElementById('fechaAdd').value,
-            IDENTIFICACIONFISCAL: document.getElementById('idFiscalAdd').value,
-            NOMBRE1: document.getElementById('nombre1Add').value,
-            NOMBRE2: document.getElementById('nombre2Add').value,
-            NUMEROCLIENTE: document.getElementById('numeroClienteAdd').value,
-            TELEFONO: document.getElementById('telefonoAdd').value
-        };
+        closeAllModals()
         // const cliente = {
-        //         "FECHA": "2099-01-04",
-        //         "IDENTIFICACIONFISCAL": "44444444441.0",
-        //         "NOMBRE1": "Barry Allen",
-        //         "NOMBRE2": "EL VELOCISTA",
-        //         "NUMEROCLIENTE": 916618,
-        //         "TELEFONO": "81-4444444"
-        //     };
-        // console.log(cliente);
+        //     FECHA: document.getElementById('fechaAdd').value,
+        //     IDENTIFICACIONFISCAL: document.getElementById('idFiscalAdd').value,
+        //     NOMBRE1: document.getElementById('nombre1Add').value,
+        //     NOMBRE2: document.getElementById('nombre2Add').value,
+        //     NUMEROCLIENTE: document.getElementById('numeroClienteAdd').value,
+        //     TELEFONO: document.getElementById('telefonoAdd').value
+        // };
+        const cliente = {
+                "FECHA": "2099-01-04",
+                "IDENTIFICACIONFISCAL": "44444444441.0",
+                "NOMBRE1": "Barry Allen",
+                "NOMBRE2": "EL VELOCISTA",
+                "NUMEROCLIENTE": 916619,
+                "TELEFONO": "81-4444444"
+            };
+        console.log(cliente);
         
         fetch(`http://${ip_hostname}:5005/api/clientes`, {
             method: 'POST',
@@ -176,41 +214,107 @@
         .catch(error => console.error('Hubo un error al agregar el cliente:', error.message));
     }
 
+    function updateCliente(event) {
+        // event.preventDefault();
+        closeAllModals()
 
+        // const cliente = {
+        //     IDCLIENTE: 120132,
+        //     FECHA: '2023-11-26',
+        //     IDENTIFICACIONFISCAL: '44444444441.0',
+        //     NOMBRE1: 'Wally West',
+        //     NOMBRE2: 'EL VELOCISTA',
+        //     NUMEROCLIENTE: 916618,
+        //     TELEFONO: '81-2222-4444'
+        // };
 
+        const cliente = {
+            IDCLIENTE: document.getElementById('idClienteEdit').value,
+            FECHA: document.getElementById('fechaEdit').value,
+            IDENTIFICACIONFISCAL: document.getElementById('idFiscalEdit').value,
+            NOMBRE1: document.getElementById('nombre1Edit').value,
+            NOMBRE2: document.getElementById('nombre2Edit').value,
+            NUMEROCLIENTE: document.getElementById('numeroClienteEdit').value,
+            TELEFONO: document.getElementById('telefonoEdit').value
+        };
+        console.log(cliente);
+        fetch(`http://${ip_hostname}:5006/api/clientes/${cliente.IDCLIENTE}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(cliente)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.message);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Cliente updated:', data);
+            actualizarClienteEnTabla(cliente)
+            // Optionally update the client list here
+        })
+        .catch(error => console.error('Hubo un error al actualizar el cliente:', error.message));
+    }
+
+    function deleteCliente(event) {
+        closeAllModals()
+        const cliente = {
+            IDCLIENTE: document.getElementById('idClienteDelete').value,
+        }
+        console.log(cliente);
+        fetch(`http://${ip_hostname}:5007/api/clientes/${cliente.IDCLIENTE}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error al eliminar el cliente: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Cliente eliminado:', data);
+            eliminarClienteDeTabla(cliente.IDCLIENTE)
+            // Optionally update the client list here
+        })
+        .catch(error => console.error('Hubo un error al eliminar el cliente:', error.message));
+    }
 
     function downloadData() {
-        // const table = document.getElementById("clientesTable");
-        // const rows = table.rows;
-        // const clients = [];
+        const table = document.getElementById("clientesTable");
+        const rows = table.rows;
+        const clients = [];
 
-        // for (let i = 1; i < rows.length; i++) {
-        //     const cells = rows[i].cells;
-        //     const client = {
-        //         FECHA: cells[0].innerText,
-        //         IDBLOQUEOPEDIDO: cells[1].innerText,
-        //         IDCATEGORIACLIENTE: cells[2].innerText,
-        //         IDCENTRAL: cells[3].innerText,
-        //         IDCLIENTE: cells[4].innerText,
-        //         IDDIRECCION: cells[5].innerText,
-        //         IDENTIFICACIONFISCAL: cells[6].innerText,
-        //         IDESTRATO: cells[7].innerText,
-        //         IDZONATRANSPORTE: cells[8].innerText,
-        //         NOMBRE_1: cells[9].innerText,
-        //         NOMBRE_2: cells[10].innerText,
-        //         NUMEROCLIENTE: cells[11].innerText,
-        //         TELEFONO: cells[12].innerText
-        //     };
-        //     clients.push(client);
-        // }
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].cells;
+            const client = {
+                IDCLIENTE: cells[0].innerText,
+                FECHA: cells[1].innerText,
+                IDENTIFICACIONFISCAL: cells[2].innerText,
+                NOMBRE1: cells[3].innerText,
+                NOMBRE2: cells[4].innerText,
+                NUMEROCLIENTE: cells[5].innerText,
+                TELEFONO: cells[6].innerText
+            };
+            clients.push(client);
+        }
 
-        // const jsonData = JSON.stringify(clients);
+        const jsonData = JSON.stringify(clients);
 
-        // const blob = new Blob([jsonData], { type: 'application/json' });
-        // const link = document.createElement('a');
-        // link.href = URL.createObjectURL(blob);
-        // link.download = 'clientes.json';
-        // link.click();
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'clientes.json';
+        link.click();
     }
 </script>
 
@@ -231,8 +335,8 @@
         <table id="clientesTable">
             <thead>
                 <tr>
-                    <th>FECHA</th>
                     <th>IDCLIENTE</th>
+                    <th>FECHA</th>
                     <th>IDENTIFICACIONFISCAL</th>
                     <th>NOMBRE1</th>
                     <th>NOMBRE2</th>
@@ -302,16 +406,16 @@
                     <span class="close">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="POST" class="login-form">
-                        <div class="form-group">
-                            <label for="fechaEdit">FECHA</label>
-                            <input type="text" id="fechaEdit" name="fechaEdit" placeholder="Ingresa la fecha"
-                                required={false} />
-                        </div>
+                    <form class="login-form" on:submit|preventDefault={updateCliente}>
                         <div class="form-group">
                             <label for="idClienteEdit">IDCLIENTE</label>
                             <input type="text" id="idClienteEdit" name="idClienteEdit"
                                 placeholder="Ingresa ID del Cliente" required={false} />
+                        </div>
+                        <div class="form-group">
+                            <label for="fechaEdit">FECHA</label>
+                            <input type="text" id="fechaEdit" name="fechaEdit" placeholder="Ingresa la fecha"
+                                required={false} />
                         </div>
                         <div class="form-group">
                             <label for="idFiscalEdit">IDENTIFICACIONFISCAL</label>
@@ -326,6 +430,11 @@
                         <div class="form-group">
                             <label for="nombre2Edit">NOMBRE2</label>
                             <input type="text" id="nombre2Edit" name="nombre2Edit" placeholder="Ingresa Nombre2"
+                                required={false} />
+                        </div>
+                        <div class="form-group">
+                            <label for="numeroClienteEdit">NUMEROCLIENTE</label>
+                            <input type="text" id="numeroClienteEdit" name="numeroClienteEdit" placeholder="Ingresa Nombre2"
                                 required={false} />
                         </div>
                         <div class="form-group">
@@ -351,38 +460,12 @@
                     <span class="close">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="POST" class="login-form">
+                    <form class="login-form" on:submit|preventDefault={deleteCliente}>
                         <div class="form-group">
-                            <label for="fechaEdit">FECHA</label>
-                            <input type="text" id="fechaEdit" name="fechaEdit" placeholder="Ingresa la fecha"
-                                required={false} />
+                            <label for="idClienteDelete">IDCLIENTE</label>
+                            <input type="text" id="idClienteDelete" name="idClienteDelete"
+                                placeholder="Ingresa ID del Cliente" required={true} />
                         </div>
-                        <div class="form-group">
-                            <label for="idClienteEdit">IDCLIENTE</label>
-                            <input type="text" id="idClienteEdit" name="idClienteEdit"
-                                placeholder="Ingresa ID del Cliente" required={false} />
-                        </div>
-                        <div class="form-group">
-                            <label for="idFiscalEdit">IDENTIFICACIONFISCAL</label>
-                            <input type="text" id="idFiscalEdit" name="idFiscalEdit"
-                                placeholder="Ingresa Identificación Fiscal" required={false} />
-                        </div>
-                        <div class="form-group">
-                            <label for="nombre1Edit">NOMBRE1</label>
-                            <input type="text" id="nombre1Edit" name="nombre1Edit" placeholder="Ingresa Nombre1"
-                                required={false} />
-                        </div>
-                        <div class="form-group">
-                            <label for="nombre2Edit">NOMBRE2</label>
-                            <input type="text" id="nombre2Edit" name="nombre2Edit" placeholder="Ingresa Nombre2"
-                                required={false} />
-                        </div>
-                        <div class="form-group">
-                            <label for="telefonoEdit">TELEFONO</label>
-                            <input type="text" id="telefonoEdit" name="telefonoEdit" placeholder="Ingresa Telefono"
-                                required={false} />
-                        </div>
-
                         <br>
                         <button type="submit" class="btn">ELIMINAR CLIENTE</button>
                     </form>
