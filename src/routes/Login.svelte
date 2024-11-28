@@ -10,7 +10,7 @@
     user = get(authStore);
     isLoggedIn = user.isAuthenticated;
     if (isLoggedIn){
-      window.location.href = '/profile';
+      window.location.href = '/dashboard';
     }
   })();
 
@@ -63,7 +63,7 @@
       }
 
       // Redirect to the profile page after a delay
-      window.location.href = '/profile';
+      window.location.href = '/dashboard';
       
     } catch (error) {
       currentError = `Error logging in: ${error.message}`;

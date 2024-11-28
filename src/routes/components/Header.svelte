@@ -1,4 +1,7 @@
 <script>
+    import { checkAuth, handleLogout } from "../../utils/authUtils";
+    
+    // checkAuth();
     let isOpen = false
     function toggleMenu() {
         // const sidebar = document.getElementById("sidebar");
@@ -12,7 +15,7 @@
 
 <div class="header">
     <div class="logo">
-        <img src="logo.png" alt="Logo">
+        <img src="logo.png" alt="Logo" onclick={() => window.location.href = '/'}>
         <h1>Plataforma de Gestión de Clientes y Créditos</h1>
     </div>
     <div class="menu-icon" onclick={toggleMenu}>
@@ -24,9 +27,10 @@
 
 <div class="sidebar" id="sidebar" style="left: {isOpen ? '0' : '-150px'}">
     <a href="/clientes">Clientes</a>
-    <a href="historial_crediticio.html">Historial Crediticio</a>
-    <a href="creditos_pago.html">Créditos y Pagos</a>
-    <a href="analisis_financiero.html">Análisis Financiero</a>
+    <a href="/historialesCreditos">Historial Crediticio</a>
+    <a href="/creditos">Créditos y Pagos</a>
+    <a href="/analisisFinanciero">Análisis Financiero</a>
+    <a href="#" onclick={handleLogout}>Logout</a>
 </div>
 
 <style>
@@ -58,6 +62,7 @@ body {
 .header .logo img {
     max-width: 50px;
     margin-right: 10px;
+    cursor: pointer;
 }
 
 .header h1 {

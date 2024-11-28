@@ -1,5 +1,8 @@
 <script>
-    import { login_user } from '../../stores/authStore';
+    import { checkAuth, getIsLoggedIn } from "../../utils/authUtils";
+    checkAuth();
+    let isLoggedIn = getIsLoggedIn();
+
     import Header from '../components/Header.svelte'
     import { onMount } from 'svelte';
     const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
@@ -181,7 +184,7 @@
                 "IDENTIFICACIONFISCAL": "44444444441.0",
                 "NOMBRE1": "Barry Allen",
                 "NOMBRE2": "EL VELOCISTA",
-                "NUMEROCLIENTE": 916619,
+                "NUMEROCLIENTE": 916620,
                 "TELEFONO": "81-4444444"
             };
         console.log(cliente);
@@ -215,7 +218,7 @@
     }
 
     function updateCliente(event) {
-        // event.preventDefault();
+        event.preventDefault();
         closeAllModals()
 
         // const cliente = {
@@ -224,7 +227,7 @@
         //     IDENTIFICACIONFISCAL: '44444444441.0',
         //     NOMBRE1: 'Wally West',
         //     NOMBRE2: 'EL VELOCISTA',
-        //     NUMEROCLIENTE: 916618,
+        //     NUMEROCLIENTE: 916619,
         //     TELEFONO: '81-2222-4444'
         // };
 
@@ -257,12 +260,12 @@
         .then(data => {
             console.log('Cliente updated:', data);
             actualizarClienteEnTabla(cliente)
-            // Optionally update the client list here
         })
         .catch(error => console.error('Hubo un error al actualizar el cliente:', error.message));
     }
 
     function deleteCliente(event) {
+        event.preventDefault();
         closeAllModals()
         const cliente = {
             IDCLIENTE: document.getElementById('idClienteDelete').value,
@@ -284,7 +287,6 @@
         .then(data => {
             console.log('Cliente eliminado:', data);
             eliminarClienteDeTabla(cliente.IDCLIENTE)
-            // Optionally update the client list here
         })
         .catch(error => console.error('Hubo un error al eliminar el cliente:', error.message));
     }
@@ -324,6 +326,7 @@
   <title>Iniciar Sesión</title>
 </svelte:head>
 
+{#if isLoggedIn}
 <Header/>
 
 <div class="main" id="main">
@@ -357,7 +360,7 @@
                     <span class="close">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <form class="login-form" on:submit|preventDefault={addCliente}>
+                    <form class="login-form" onsubmit={addCliente}>
                         <div class="form-group">
                             <label for="fechaAdd">FECHA</label>
                             <input type="text" id="fechaAdd" name="fechaAdd" placeholder="Ingresa la Fecha"
@@ -406,7 +409,7 @@
                     <span class="close">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <form class="login-form" on:submit|preventDefault={updateCliente}>
+                    <form class="login-form" onsubmit={updateCliente}>
                         <div class="form-group">
                             <label for="idClienteEdit">IDCLIENTE</label>
                             <input type="text" id="idClienteEdit" name="idClienteEdit"
@@ -460,7 +463,7 @@
                     <span class="close">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <form class="login-form" on:submit|preventDefault={deleteCliente}>
+                    <form class="login-form" onsubmit={deleteCliente}>
                         <div class="form-group">
                             <label for="idClienteDelete">IDCLIENTE</label>
                             <input type="text" id="idClienteDelete" name="idClienteDelete"
@@ -484,9 +487,10 @@
 
         <br>
 
-        <button class="download-btn" on:click={downloadData}>Descargar Datos</button>
+        <button class="download-btn" onclick={downloadData}>Descargar Datos</button>
     </div>
 </div>
+{/if}
 
 <style>
 body {
