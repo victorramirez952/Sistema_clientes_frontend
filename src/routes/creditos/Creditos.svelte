@@ -6,6 +6,8 @@
     import { on } from 'svelte/events';
     import Header from '../components/Header.svelte'
     import { onMount } from 'svelte';
+    const ip_hostname = import.meta.env.VITE_IP_HOSTNAME;
+    const token = import.meta.env.VITE_TOKEN;
 
     function closeAllModals() {
         document.querySelectorAll('.modal').forEach(modal => {
@@ -13,8 +15,122 @@
         });
     }
 
+    function cargarCreditos() {
+        fetch(`http://${ip_hostname}:5013/api/creditos`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+        })
+
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                const tableBody = document.querySelector(
+                    "#creditosPagos tbody",
+                );
+                tableBody.innerHTML = "";
+
+                if(data && Array.isArray(data.creditos)) {
+                    data.creditos.forEach((credito) => {
+                        const row  = document.createElement("tr");
+                        row.setAttribute("data-id", credito.IDCREDITO);
+
+                        const valorSeguro = (dato) =>
+                            dato !== null && dato !== undefined ? dato : "N/A";
+                        
+                        row.innerHTML = `
+                        <td>${valorSeguro(credito.IDCREDITO)}</td>
+                        <td>${valorSeguro(credito.IDCLIENTE)}</td>
+                        <td>${valorSeguro(credito.LIMITECREDITO)}</td>
+                        <td>${valorSeguro(credito.FECHAVENCIMIENTO)}</td>
+                        <td>${valorSeguro(credito.STATUS)}</td>`;
+                            tableBody.appendChild(row);
+                    });
+                }
+                else{
+                    console.error(
+                        "La estructura de los datos no es la esperada",
+                    );
+                }
+            })
+            .catch((error) => 
+                console.error("Error al cargar los datos: ", error),
+            );
+    }
+
+    function agregarCreditoInicioTabla(credito) {
+        const tableBody = document.querySelector(
+            "#creditosTable tbody"
+        );
+
+        const row = document.createElement("tr");
+        row.setAttribute("data-id", credito.IDCREDITO);
+
+        const valorSeguro = (dato) =>
+            dato !== null && dato !== undefined ? dato : "N/A";
+
+        row.innerHTML = `
+            <td>${valorSeguro(credito.IDCREDITO)}</td>
+            <td>${valorSeguro(credito.IDCLIENTE)}</td>
+            <td>${valorSeguro(credito.LIMITECREDITO)}</td>
+            <td>${valorSeguro(credito.FECHAVENCIMIENTO)}</td>
+            <td>${valorSeguro(credito.STATUS)}</td>`;
+        tableBody.insertBefore(row, tableBody.firstChild);
+
+    }
+
+    function actualizarCreditoEnTabla(credito) {
+        const tableBody = document.querySelector("#creditosTable tbody");
+
+        const row = document.querySelector(
+            `#creditosTable tbody tr[data-id="${credito.IDCREDITO}"]`,
+        );
+
+        if(row) {
+            const valorSeguro = (dato) =>
+                dato !== null && dato !== undefined ? dato : "N/A";
+
+            row.innerHTML = `
+                <td>${valorSeguro(credito.IDCREDITO)}</td>
+                <td>${valorSeguro(credito.IDCLIENTE)}</td>
+                <td>${valorSeguro(credito.LIMITECREDITO)}</td>
+                <td>${valorSeguro(credito.FECHAVENCIMIENTO)}</td>
+                <td>${valorSeguro(credito.STATUS)}</td>`;
+        }
+        else{
+            console.log("Credito no encontrado");
+        }
+    }
+
+    function getCredito(idCliente) {
+        return fetch(`http://${ip_hostname}:5014/api/clientes/${idCliente}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+        })
+
+        .then((response) => response.json())
+        .then((data) => {
+                if (data && data.credits && data.credits.length > 0) {
+                    return data.credits[0];
+                } else {
+                    console.error("No credit found");
+                    return null;
+                }
+            })
+            .catch((error) => {
+                console.error("Error al cargar los creditos:", error);
+                return null;
+            });
+    }
+
     onMount(() => {
-        // cargarCreditos();
+        cargarCreditos();
         var modalAdd = document.getElementById("modalAdd");
         var modalEdit = document.getElementById("modalEdit");
 
@@ -42,6 +158,97 @@
         };
     });
 
+    function addCredito(event) {
+        event.preventDefault();
+
+        closeAllModals();
+        const form = document.getElementById('form_crear_credito');
+
+        const credito = {
+            IDCLIENTE: form.querySelector('[name="IDCLIENTE"]').value,
+            LIMITECREDITO: form.querySelector('[name="LIMITECREDITO"]').value,
+            FECHAVENCIMIENTO: form.querySelector('[name="FECHAVENCIMIENTO"]').value,
+        };
+        console.log(credito);
+
+        fetch(`http://${ip_hostname}:5015/api/creditos`, {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credito),
+        })
+
+            .then((response) => {
+                if(!response.ok) {
+                    return response.json().then((error) => {
+                        throw new Error(error.message);
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Credito added: ", data);
+                let id_credito_registrado = data.IDCLIENTE;
+                cargarCreditos();
+                // getCredito(id_credito_registrado)
+                //     .then((credito) => {
+                //         agregarCreditoInicioTabla(credito);
+                //     })
+                //     .catch((error) => {
+                //         console.log("Error fetching credit: ", error);
+                //     })
+            })
+            .catch((error) =>
+                console.error(
+                    "Hubo un error al agregar el credito:",
+                    error.message,
+                ),
+            );
+    }
+
+    function updateCredito(event) {
+        event.preventDefault();
+        closeAllModals();
+        const form = document.getElementById('form_editar_credito');
+        const credito = {
+            IDCREDITO: form.querySelector('[name="IDCREDITO"]').value,
+            IDCLIENTE: form.querySelector('[name="IDCLIENTE"]').value,
+            LIMITECREDITO: form.querySelector('[name="LIMITECREDITO"]').value,
+            FECHAVENCIMIENTO: form.querySelector('[name="FECHAVENCIMIENTO"]').value,
+            STATUS: form.querySelector('[name="STATUS"]').value
+        };
+        console.log(credito);
+        
+        fetch(`http://${ip_hostname}:5016/api/creditos/${credito.IDCREDITO}/actualizar`, {
+            method: "PUT",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credito),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.json().then((error) => {
+                        throw new Error(error.message);
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Credito updated:", data);
+                cargarCreditos();
+            })
+            .catch((error) =>
+                console.error(
+                    "Hubo un error al actualizar el credito:",
+                    error.message,
+                ),
+            );
+    }
+
     function downloadData() {
         const table = document.getElementById("creditosPagosTable");
         const rows = table.rows;
@@ -67,153 +274,181 @@
         link.download = 'creditos.json';
         link.click();
     }
-
-    function addCredito(event) {
-        event.preventDefault();
-        closeAllModals()
-        const form = document.getElementById('form_crear_credito');
-
-        const credito = {
-            IDCLIENTE: form.querySelector('[name="IDCLIENTE"]').value,
-            LIMITECREDITO: form.querySelector('[name="LIMITECREDITO"]').value,
-            FECHAVENCIMIENTO: form.querySelector('[name="FECHAVENCIMIENTO"]').value
-        };
-
-        console.log(credito);
-
-        // REST OF THE CODE
-    }
-
-    function updateCredito(event) {
-        event.preventDefault();
-        closeAllModals();
-        const form = document.getElementById('form_editar_credito');
-        const credito = {
-            IDCREDITO: form.querySelector('[name="IDCREDITO"]').value,
-            LIMITECREDITO: form.querySelector('[name="LIMITECREDITO"]').value,
-            FECHAVENCIMIENTO: form.querySelector('[name="FECHAVENCIMIENTO"]').value,
-            STATUS: form.querySelector('[name="STATUS"]').value
-        };
-        console.log(credito);
-        
-        // REST OF THE CODE
-    }
-
-
 </script>
 
 <svelte:head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Créditos</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Créditos</title>
 </svelte:head>
 
 {#if isLoggedIn}
-<Header/>
-<div class="main" id="main">
-    <div class="dashboard-header">
-        <h2>Créditos</h2>
-    </div>
+    <Header />
+    <div class="main" id="main">
+        <div class="dashboard-header">
+            <h2>Créditos</h2>
+        </div>
 
-    <div class="content">
-        <span>
+        <div class="content">
+            <span>
+                <div class="buttons">
+                    <input
+                        type="text"
+                        id="idCliente"
+                        name="idCliente"
+                        placeholder="Buscar por ID Cliente"
+                    />
+                    <button>Buscar</button>
+                </div>
+            </span>
+            <br />
+            <table id="creditosPagos">
+                <thead>
+                    <tr>
+                        <th>IDCREDITO</th>
+                        <th>IDCLIENTE</th>
+                        <th>LIMITECREDITO</th>
+                        <th>FECHAVENCIMIENTO</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody> </tbody>
+            </table>
+            <br />
+
+            <div class="modal" id="modalAdd">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>AÑADIR CRÉDITO</h2>
+                        <span class="close">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form
+                            onsubmit={addCredito}
+                            class="login-form"
+                            id="form_crear_credito"
+                        >
+                            <div class="form-group">
+                                <label for="IDCLIENTE">IDCLIENTE</label>
+                                <input
+                                    type="number"
+                                    name="IDCLIENTE"
+                                    placeholder="Ingresa ID del cliente"
+                                    required={false}
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="LIMITECREDITO">LIMITECREDITO</label>
+                                <input
+                                    type="number"
+                                    name="LIMITECREDITO"
+                                    placeholder="Ingresa Nombre del Cliente"
+                                    required={false}
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="FECHAVENCIMIENTO"
+                                    >FECHAVENCIMIENTO</label
+                                >
+                                <input
+                                    type="text"
+                                    name="FECHAVENCIMIENTO"
+                                    placeholder="Ingresa la fecha"
+                                    required={false}
+                                />
+                            </div>
+                            <br />
+                            <button type="submit" class="btn"
+                                >AÑADIR CRÉDITO</button
+                            >
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <h3></h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal" id="modalEdit">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>EDITAR CRÉDITO</h2>
+                        <span class="close">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form
+                            onsubmit={updateCredito}
+                            class="login-form"
+                            id="form_editar_credito"
+                        >
+                            <div class="form-group">
+                                <label for="IDCREDITO">IDCREDITO</label>
+                                <input
+                                    type="number"
+                                    id="IDCREDITO"
+                                    name="IDCREDITO"
+                                    placeholder="Ingresa ID del Credito"
+                                    required={false}
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="IDCLIENTE">IDCLIENTE</label>
+                                <input
+                                    type="text"
+                                    id="IDCLIENTE"
+                                    name="IDCLIENTE"
+                                    placeholder="Ingresa ID del Cliente"
+                                    required={false}
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="LIMITECREDITO">LIMITECREDITO</label>
+                                <input
+                                    type="number"
+                                    id="LIMITECREDITO"
+                                    name="LIMITECREDITO"
+                                    placeholder="Ingresa Nombre del Cliente"
+                                    required={false}
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="FECHAVENCIMIENTO"
+                                    >FECHAVENCIMIENTO</label
+                                >
+                                <input
+                                    type="text"
+                                    id="FECHAVENCIMIENTO"
+                                    name="FECHAVENCIMIENTO"
+                                    placeholder="Ingresa Status del Cliente"
+                                    required={false}
+                                />
+                            </div>
+                            <select name="STATUS" id="STATUS">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                            <br />
+                            <button type="submit" class="btn"
+                                >EDITAR CRÉDITO</button
+                            >
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <h3></h3>
+                    </div>
+                </div>
+            </div>
+
             <div class="buttons">
-                <input type="text" id="idCliente" name="idCliente" placeholder="Buscar por ID Cliente"/>
-                <button>Buscar</button>
+                <button id="addCredito">AGREGAR CRÉDITO</button>
+                <button id="editCredito">EDITAR CRÉDITO</button>
             </div>
-        </span>
-        <br>
-        <table id="creditosPagos">
-            <thead>
-                <tr>
-                    <th>IDCREDITO</th>
-                    <th>IDCLIENTE</th>
-                    <th>LIMITECREDITO</th>
-                    <th>FECHAVENCIMIENTO</th>
-                    <th>STATUS</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <br>
-
-        <div class="modal" id="modalAdd">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>AÑADIR CRÉDITO</h2>
-                    <span class="close">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <form onsubmit={addCredito} class="login-form" id="form_crear_credito">
-                        <div class="form-group">
-                            <label for="IDCLIENTE">IDCLIENTE</label>
-                            <input type="number" name="IDCLIENTE" placeholder="Ingresa ID del cliente" required={false} />
-                        </div>
-                        <div class="form-group">
-                            <label for="LIMITECREDITO">LIMITECREDITO</label>
-                            <input type="number" name="LIMITECREDITO" placeholder="Ingresa Nombre del Cliente" required={false} />
-                        </div>
-                        <div class="form-group">
-                            <label for="FECHAVENCIMIENTO">FECHAVENCIMIENTO</label>
-                            <input type="text" name="FECHAVENCIMIENTO" placeholder="Ingresa la fecha" required={false} />
-                        </div>
-                        <br>
-                        <button type="submit" class="btn">AÑADIR CRÉDITO</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <h3> </h3>
-                </div>
-            </div>
+            <br />
+            <button class="download-btn" onclick={downloadData}
+                >DESCARGAR DATOS</button
+            >
         </div>
-        
-        <div class="modal" id="modalEdit">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>EDITAR CRÉDITO</h2>
-                    <span class="close">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <form onsubmit={updateCredito} class="login-form" id="form_editar_credito">
-                        <div class="form-group">
-                            <label for="IDCREDITO">IDCREDITO</label>
-                            <input type="number" id="IDCREDITO" name="IDCREDITO" placeholder="Ingresa ID del Credito" required={false}  />
-                        </div>
-                        <div class="form-group">
-                            <label for="IDCLIENTE">IDCLIENTE</label>
-                            <input type="text" id="IDCLIENTE" name="IDCLIENTE" placeholder="Ingresa ID del Cliente" required={false} />
-                        </div>
-                        <div class="form-group">
-                            <label for="LIMITECREDITO">LIMITECREDITO</label>
-                            <input type="number" id="LIMITECREDITO" name="LIMITECREDITO" placeholder="Ingresa Nombre del Cliente" required={false} />
-                        </div>
-                        <div class="form-group">
-                            <label for="FECHAVENCIMIENTO">FECHAVENCIMIENTO</label>
-                            <input type="text" id="FECHAVENCIMIENTO" name="FECHAVENCIMIENTO" placeholder="Ingresa Status del Cliente" required={false} />
-                        </div>
-                        <select name="STATUS" id="STATUS">
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
-                        </select>
-                        <br>
-                        <button type="submit" class="btn">EDITAR CRÉDITO</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <h3> </h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="buttons">
-            <button id="addCredito">AGREGAR CRÉDITO</button>
-            <button id="editCredito">EDITAR CRÉDITO</button>
-        </div>
-        <br>
-        <button class="download-btn" onclick={downloadData}>DESCARGAR DATOS</button>
     </div>
-</div>
 {/if}
 
 <style>
@@ -271,7 +506,7 @@
         position: fixed;
         top: 0;
         left: -150px;
-        width: 50;
+        width: 50px;
         height: 1000px;
         background-color: #ff5b5b;
         color: #ecf0f1;
@@ -496,15 +731,23 @@
         border: 1px solid #888;
         width: 50%;
         max-width: 800px;
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        box-shadow:
+            0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
         animation-name: animatetop;
         animation-duration: 0.4s;
         border-radius: 8px;
     }
 
     @keyframes animatetop {
-        from {top: -300px; opacity: 0}
-        to {top: 0; opacity: 1}
+        from {
+            top: -300px;
+            opacity: 0;
+        }
+        to {
+            top: 0;
+            opacity: 1;
+        }
     }
 
     .login-form {
@@ -533,5 +776,5 @@
         cursor: pointer;
         transition: background-color 0.3s;
         width: 50%;
-    }
+    }
 </style>
