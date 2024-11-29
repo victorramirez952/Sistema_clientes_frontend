@@ -5,9 +5,9 @@ import { get } from 'svelte/store';
 export function checkAuth() {
     const user = get(authStore);
     const isLoggedIn = user.isAuthenticated;
-    // if (!isLoggedIn) {
-    //     window.location.href = '/login';
-    // }
+    if (!isLoggedIn) {
+        window.location.href = '/login';
+    }
 }
 
 export function handleLogout() {
@@ -17,6 +17,11 @@ export function handleLogout() {
 
 export function getIsLoggedIn() {
     const user = get(authStore);
-    // return user.isAuthenticated;
-    return true
+    return user.isAuthenticated;
+    // return true
+}
+
+export function getToken() {
+    const user = get(authStore);
+    return user.token;
 }

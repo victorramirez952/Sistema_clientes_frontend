@@ -1,13 +1,13 @@
 <script>
-    import { checkAuth, getIsLoggedIn } from "../../utils/authUtils";
+    import { checkAuth, getIsLoggedIn, getToken } from "../../utils/authUtils";
     checkAuth();
     let isLoggedIn = getIsLoggedIn();
+    const token = getToken()
 
     import { on } from 'svelte/events';
     import Header from '../components/Header.svelte'
     import { onMount } from 'svelte';
     const ip_hostname = import.meta.env.VITE_IP_HOSTNAME;
-    const token = import.meta.env.VITE_TOKEN;
 
     function closeAllModals() {
         document.querySelectorAll('.modal').forEach(modal => {
@@ -290,17 +290,6 @@
         </div>
 
         <div class="content">
-            <span>
-                <div class="buttons">
-                    <input
-                        type="text"
-                        id="idCliente"
-                        name="idCliente"
-                        placeholder="Buscar por ID Cliente"
-                    />
-                    <button>Buscar</button>
-                </div>
-            </span>
             <br />
             <table id="creditosPagos">
                 <thead>

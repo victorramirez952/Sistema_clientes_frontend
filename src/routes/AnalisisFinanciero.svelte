@@ -1,7 +1,8 @@
 <script>
-    import { checkAuth, getIsLoggedIn } from "../utils/authUtils";
+    import { checkAuth, getIsLoggedIn, getToken } from "../utils/authUtils";
     checkAuth();
     let isLoggedIn = getIsLoggedIn();
+    const token = getToken()
 
     import Header from './components/Header.svelte'
     import { onMount } from 'svelte';

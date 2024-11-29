@@ -1,12 +1,13 @@
 <script>
-    import { checkAuth, getIsLoggedIn } from "../../utils/authUtils";
+  import { get } from "svelte/store";
+    import { checkAuth, getIsLoggedIn, getToken } from "../../utils/authUtils";
     checkAuth();
     let isLoggedIn = getIsLoggedIn();
 
     import Header from '../components/Header.svelte'
     import { onMount } from 'svelte';
     const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
-    const token = import.meta.env.VITE_TOKEN
+    const token = getToken()
 
     function closeAllModals() {
         document.querySelectorAll('.modal').forEach(modal => {

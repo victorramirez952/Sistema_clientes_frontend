@@ -29,7 +29,7 @@
     <a href="/clientes">Clientes</a>
     <a href="/historialesCreditos">Historial Crediticio</a>
     <a href="/creditos">Créditos y Pagos</a>
-    <a href="/analisisFinanciero">Análisis Financiero</a>
+    <!-- <a href="/analisisFinanciero">Análisis Financiero</a> -->
     <a href="#" onclick={handleLogout}>Logout</a>
 </div>
 

@@ -8,6 +8,16 @@ const storedAuth = JSON.parse(localStorage.getItem('auth')) || {
   nombreUsuario: null
 };
 
+// Obtener token
+export const get_token = () => {
+  let token;
+  authStore.subscribe((value) => {
+    token = value.token;
+  })();
+  return token;
+};
+
+
 export const authStore = writable(storedAuth);
 
 authStore.subscribe((value) => {
