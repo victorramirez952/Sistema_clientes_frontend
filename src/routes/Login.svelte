@@ -20,10 +20,10 @@
 
   const ip_hostname = import.meta.env.VITE_IP_HOSTNAME
 
-  const login_test = async () => {
-    // window.location.href = 'ignore_dashboard.html'; 
-    window.location.href = '/dashboard';
-  }
+  // const login_test = async () => {
+  //   // window.location.href = 'ignore_dashboard.html'; 
+  //   window.location.href = '/dashboard';
+  // }
   
   const login = async () => {
     try {
@@ -87,7 +87,7 @@
     </div>
   </header>
   <h1 class="title">Iniciar Sesión v0.0</h1>
-  <form on:submit|preventDefault={login_test}>
+  <form on:submit|preventDefault={login}>
     <div class="form-group">
       <label for="nombreUsuario">Usuario</label>
       <input

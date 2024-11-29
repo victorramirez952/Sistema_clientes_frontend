@@ -1,8 +1,9 @@
 <script>
-    import { checkAuth, getIsLoggedIn } from "../utils/authUtils";
+    import { checkAuth, getIsLoggedIn, getToken } from "../utils/authUtils";
     checkAuth();
 
     let isLoggedIn = getIsLoggedIn();
+    const token = getToken()
 
     import Header from './components/Header.svelte'
     let isOpen = false
@@ -53,89 +54,6 @@
                             </tr>
                             <tr>
                                 <td>Pagos en Proceso</td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Gráficos de Créditos y Pagos</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tipo de Crédito</th>
-                                <th>Monto Total</th>
-                                <th>Pagos Pendientes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Créditos Hipotecarios</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Créditos Personales</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Alertas y Notificaciones</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Alerta</th>
-                                <th>Fecha</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td> </td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Indicadores de Impacto Económico</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Impacto</th>
-                                <th>Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
                                 <td></td>
                             </tr>
                         </tbody>
